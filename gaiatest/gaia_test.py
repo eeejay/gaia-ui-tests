@@ -18,6 +18,17 @@ from marionette.errors import StaleElementException
 import mozdevice
 
 
+class GaiaA11y(object):
+
+    def __init__(self, marionette):
+        self.marionette = marionette
+        js = os.path.abspath(os.path.join(__file__, os.path.pardir, 'atoms', "gaia_a11y.js"))
+        self.marionette.import_script(js)
+
+    def is_hidden(self, element):
+        return self.marionette.execute_script(
+            'return GaiaA11y.isHidden.apply(GaiaA11y, arguments)', [element])
+
 class LockScreen(object):
 
     def __init__(self, marionette):
@@ -432,6 +443,7 @@ class GaiaTestCase(MarionetteTestCase):
         self.data_layer = GaiaData(self.marionette, self.testvars)
         from gaiatest.apps.keyboard.app import Keyboard
         self.keyboard = Keyboard(self.marionette)
+        self.a11y = GaiaA11y(self.marionette)
 
         self.cleanUp()
 
